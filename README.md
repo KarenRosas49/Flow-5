@@ -14,6 +14,7 @@ Para hacer las instalaciones requeridas para este ejercicio se siguieron los pas
 - [Introducción a NodeRed](https://edu.codigoiot.com/course/view.php?id=278)
 
 ## Instrucciones
+## Parte MQTT
 1. Abrir la terminal y escribir el siguiente comando: **node-red**.
 >Nota: Es importante escribir este comando en la terminal ya que si no se hace no se podrá trabajar con Node Red.
 2. En el navegador escribir: **localhost:1880**, se abrirá Node Red.
@@ -37,6 +38,9 @@ El segundo bloque se llamará humedad y contendrá el siguiente código:
 8. Abrir la terminal y ejecutar el siguiente comando:
 >mosquitto_pub -h localhost -t codigoIoT/Mor/mqtt/flow4 -m '{"ID":"NOMBRE","temp":TEMPERATURA,"hum":HUMEDAD}'
 TEMPERATURA y HUMEDAD son valores numéricos.
+
+### Parte API
+1. Agregar un bloque **inject** y configurarlo para que mande datos cada un minuto.
 9. Finalmente, dar click en el botón **Deploy** para que se actualicen los cambios. 
 
 ## Resultados
