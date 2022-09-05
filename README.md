@@ -41,17 +41,65 @@ TEMPERATURA y HUMEDAD son valores numéricos.
 
 ### Parte API
 1. Agregar un bloque **inject** y configurarlo para que mande datos cada un minuto.
-2. Unir al bloque **inject** un bloque **http request** y configurarlo con 
-9. Finalmente, dar click en el botón **Deploy** para que se actualicen los cambios. 
+2. Unir al bloque **inject** un bloque **http request** y configurarlo con la URL de Opemweather, como se muestra a continuación:
+>http://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&units={units}
+En *lat* y *lon* se debe colocar la longitud y latitud del lugar donde se obtendrá la temperatura, y en *units* se especificará en qué unidades nos mostrará la información.
+3. Unir un bloque **JSON** al bloque **http request** y configurarlo en *Always convert to JavaSript Object*.
+4. Unir dos bloques **function** al bloque **JSON**, uno corresponderá a la temperatura y el otro a la humedad.
+Al bloque de temperatura, agregarle el siguiente código:
+>global.set("tempAPI", msg.payload.main.temp);
+
+>msg.payload = msg.payload.main.temp;
+
+>msg.topic = "Temperatura";
+
+>return msg;
+Al bloque humedad, agregarle es siguiente código:
+>global.set("humAPI", msg.payload.main.humidity);
+
+>msg.payload = msg.payload.main.humidity;
+
+>msg.topic = "Humedad";
+
+>return msg;
+5. Al final de cada bloque agregar un bloque **gauge** para observar la información.
+
+### Parte enviador
+1. Agregar un bloque **inject** y configurarlo para que envíe la información cada minuto.
+2. Añadir un bloque **function** y escribir el siguiente código:
+>msg.payload = '{"id":"Nombre, Ciudad, Estado","temp":' + global.get("tempAPI")+',"hum":' + global.get("humAPI") +'}';
+
+>return msg;
+3. Agregar un bloque **mqtt out** y en *server* escribir la dirección del broquer público en donde se enviará la información, y en *Topic* escribir: codigoIoT/flow5/mqtt/clima.
+
+### Parte escuchador
+1. Agregar un bloque **mqtt in** y en *server* escribir la dirección del broquer público en donde se enviará la información, y en *Topic* escribir: codigoIoT/flow5/mqtt/clima.
+2. Unir un bloque **JSON** al bloque **mqtt in** y configurarlo en *Always convert to JavaSript Object*.
+3. Unir dos bloques **function** al bloque **JSON**, uno corresponderá a la temperatura y el otro a la humedad.
+Al bloque de temperatura, agregarle el siguiente código:
+>msg.topic = msg.payload.id;
+
+>msg.payload =msg.payload.temp;
+
+>return msg;
+
+Al bloque humedad, agregarle es siguiente código:
+>msg.topic = msg.payload.id;
+
+>msg.payload = msg.payload.hum;
+
+>return msg;
+Al final de cada bloque **function** agregar un bloque **chart** para observar la información de las personas que envíen datos.
+5. Finalmente, dar click en el botón **Deploy** para que se actualicen los cambios. 
 
 ## Resultados
 Una vez completados los pasos anteriores se deberá ver abrir el dashboard, como se muestra a continuación:
 
-![Captura de pantalla]()
+![Captura de pantalla](Captura_dashboard.png)
 
 El flow en Node Red debe verse como el mostrado a continuación:
 
-![Captura de pantalla]()
+![Captura de pantalla](Captura_flow5.png)
 
 ## Evidencias
 [Evidencia Flow 5]()
